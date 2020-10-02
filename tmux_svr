@@ -1,0 +1,33 @@
+# Session Name
+session="Website"
+SESSIONEXISTS=$(tmux list-sessions | grep $SESSION)
+
+# Only create tmux session if it doesn't already exist
+if [ "$SESSIONEXISTS" = "" ]
+then
+
+# Start New Session with our name
+tmux new-session -d -s $session
+
+# Name first Window and start zsh
+tmux rename-window -t 0 'Main'
+tmux send-keys -t 'Main' 'cd ~/Works/svr-nuxt-storyblok' C-m 'clear' C-m 'nvim' C-m
+
+# Split pane 1 horizontal
+tmux splitw -h -p 3
+tmux send-keys -t 'Main' 'cd ~/Works/svr-nuxt-storyblok' C-m 'clear' C-m 'npm run dev' C-m
+
+# Select pane 2 
+tmux selectp -t 1
+# Split pane 2 vertiacally
+tmux splitw -v -p 25
+tmux send-keys -t 'Main' 'cd ~/Works/svr-nuxt-storyblok' C-m 'clear' C-m
+
+# Select pane 1
+tmux selectp -t 0
+# tmux send-keys -t 'Main' ':CHADopen' C-m
+
+fi
+
+# Attach Session, on the Main window
+tmux attach-session -t $SESSION:0
